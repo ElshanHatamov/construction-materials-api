@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.constructionmaterialsapi.enums.UnitType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,6 +29,11 @@ public class Product {
     BigDecimal price;
     @NotNull
     Integer stock;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    UnitType unit;
 
     @ManyToOne
     @JoinColumn(name = "seller_id", nullable = false)

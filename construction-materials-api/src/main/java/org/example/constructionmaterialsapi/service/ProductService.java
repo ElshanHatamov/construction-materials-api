@@ -16,6 +16,8 @@ import org.example.constructionmaterialsapi.model.entity.User;
 import org.example.constructionmaterialsapi.repository.CategoryRepository;
 import org.example.constructionmaterialsapi.repository.ProductRepository;
 import org.example.constructionmaterialsapi.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,5 +67,29 @@ public class ProductService {
             throw new AccessDeniedException("Bu emeliyyati yerine yetire bilmezsiniz");
         }
         productRepository.deleteById(id);
+    }
+
+    public Page<ProductResponse> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(productMapper::toResponse);
+    }
+
+    public ProductResponse updateProduct(Long id, ProductRequest request, String ownerEmail) {
+
+        Product product = productRepository.findById(id).
+                orElseThrow(() -> new ProductNotFoundException(
+                        "Mehsul Tapilmadi"));
+        if (!product.getSeller().getEmail().equals(ownerEmail)) {
+            throw new AccessDeniedException("Bu Emeliyyati yerine yetire bilmezsiniz");
+        }
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Kateegoriya tapilmadi"));
+
+        product.setCategory(category);
+        productMapper.updateEntityFromDto(product, request, product.getSeller(), category);
+
+        Product updatedProduct = productRepository.save(product);
+        return productMapper.toResponse(updatedProduct);
+
     }
 }

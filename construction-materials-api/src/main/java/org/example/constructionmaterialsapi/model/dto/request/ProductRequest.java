@@ -31,9 +31,6 @@ public class ProductRequest {
     @NotNull(message = "Olcu vahidi secilmelidir")
     UnitType unit;
 
-    @NotNull(message = "Satici ID-si mutleqdir")
-    Long seller_id;
-
     @NotNull(message = "Kateqoriya ID-si mutleqdir")
     Long categoryId;
 

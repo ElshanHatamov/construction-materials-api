@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.example.constructionmaterialsapi.enums.Role;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -55,5 +56,8 @@ public class User {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Order> orderList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToStringExclude
+    List<RefreshToken> refreshTokens = new ArrayList<>();
 
 }

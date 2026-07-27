@@ -1,6 +1,7 @@
 package org.example.constructionmaterialsapi.mapper;
 
-import org.example.constructionmaterialsapi.model.dto.request.UserCreateRequest;
+import org.example.constructionmaterialsapi.enums.Role;
+import org.example.constructionmaterialsapi.model.dto.request.RegisterRequest;
 import org.example.constructionmaterialsapi.model.dto.response.UserResponse;
 import org.example.constructionmaterialsapi.model.entity.User;
 import org.springframework.stereotype.Component;
@@ -8,14 +9,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public User toEntity(UserCreateRequest request) {
+    public User toEntity(RegisterRequest request) {
+        if (request == null) {
+            return null;
+        }
         User user = new User();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setPassword(request.getPassword());
-        user.setRole(request.getRole());
-        user.setActive(true);
+        user.setRole(Role.USER);
+        user.setActive(false);
         return user;
     }
 
@@ -26,8 +30,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .active(user.isActive())
-                .role(user.getRole())
-                .createAt(user.getCreateAt())
+                .createAt(String.valueOf(user.getCreateAt()))
                 .build();
     }
 }

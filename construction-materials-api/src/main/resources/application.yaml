@@ -3,9 +3,9 @@ spring:
     name: construction-materials-api
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/constructiondb
-    username: myuser
-    password: mypassword
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/constructiondb}
+    username: ${DB_USERNAME:myuser}
+    password: ${DB_PASSWORD:mypassword}
 
   jpa:
     hibernate:

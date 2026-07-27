@@ -27,11 +27,11 @@ public class Order {
 
     LocalDateTime orderDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id", nullable = false)
     User buyer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id",nullable = false)
     Product product;
 }

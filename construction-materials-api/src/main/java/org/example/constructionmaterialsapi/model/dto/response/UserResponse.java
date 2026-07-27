@@ -1,9 +1,7 @@
 package org.example.constructionmaterialsapi.model.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.example.constructionmaterialsapi.enums.Role;
 
 import java.time.LocalDateTime;
@@ -12,13 +10,13 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
 
-    private Long id;
-    private String fullName;
-    private String email;
-    private String phone;
-    private boolean active;
-    private Role role;
-    private LocalDateTime createAt;
+    Long id;
+    String fullName;
+    String email;
+    String phone;
+    boolean active;
+    String createAt;
 }

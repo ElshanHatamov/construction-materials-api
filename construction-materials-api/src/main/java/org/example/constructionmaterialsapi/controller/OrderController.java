@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.example.constructionmaterialsapi.model.dto.request.OrderRequest;
 import org.example.constructionmaterialsapi.model.dto.response.OrderResponse;
+import org.example.constructionmaterialsapi.security.CustomUserDetails;
 import org.example.constructionmaterialsapi.service.OrderService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -26,20 +28,20 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderRequest request,
-                                                     Principal principal) {
+                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderService.createOrder(request, principal.getName()));
+                .body(orderService.createOrder(request, userDetails.getUsername()));
     }
 
     @GetMapping("/my" )
-    public ResponseEntity<Page<OrderResponse>> getMyOrders(Principal principal,
+    public ResponseEntity<Page<OrderResponse>> getMyOrders(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                            Pageable pageable) {
-        return ResponseEntity.ok(orderService.getMyOrders(principal.getName(), pageable));
+        return ResponseEntity.ok(orderService.getMyOrders(userDetails.getUsername(), pageable));
     }
 
     @GetMapping("/{id}" )
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id,
-                                                      Principal principal) {
-        return ResponseEntity.ok(orderService.getOrderById(id, principal.getName()));
+                                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(orderService.getOrderById(id, userDetails.getUsername()));
     }
 }

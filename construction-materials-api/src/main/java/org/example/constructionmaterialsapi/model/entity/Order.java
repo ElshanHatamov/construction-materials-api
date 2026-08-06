@@ -1,13 +1,16 @@
 package org.example.constructionmaterialsapi.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.constructionmaterialsapi.enums.OrderStatus;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,17 +24,18 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @NotNull
-    Integer totalPrice;
+    BigDecimal totalPrice;
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     OrderStatus status;
 
+    @CreationTimestamp
     LocalDateTime orderDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "buyer_id", nullable = false)
     User buyer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id",nullable = false)
-    Product product;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<OrderItem> items = new ArrayList<>();
 }

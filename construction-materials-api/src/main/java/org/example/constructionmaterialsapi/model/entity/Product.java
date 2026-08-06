@@ -35,14 +35,14 @@ public class Product {
     @Column(nullable = false)
     UnitType unit;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "seller_id", nullable = false)
     User seller;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Order> orderList = new ArrayList<>();
+    @OneToMany(mappedBy = "product")
+    List<OrderItem> orderItems = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     Category category;
 }

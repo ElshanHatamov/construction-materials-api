@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,6 +39,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Daxil edilen kategoriya tapilmadi")
     })
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','SELLER')")
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request,
                                                          @RequestParam String ownerEmail) {
         return ResponseEntity
@@ -56,6 +58,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Daxil edilen ID-ye uygun mehsul tapilmadi")
     })
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
@@ -70,6 +73,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Mehsul tapilmadi")
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteProductById(@PathVariable Long id,
                                                   @RequestParam String ownerEmail) {
         productService.deleteProductById(id, ownerEmail);
@@ -84,6 +88,7 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "Mehsullarin siyahisi ugurla alindi")
     })
     @GetMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Page<ProductResponse>> getAllProducts(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
         return ResponseEntity.ok(productService.getAllProducts(pageable));
     }
@@ -99,6 +104,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Mehsul veya Kategoriya tapilmadi")
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','SELLER')")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id,
                                                          @Valid @RequestBody ProductRequest request,
                                                          @RequestParam String ownerEmail) {

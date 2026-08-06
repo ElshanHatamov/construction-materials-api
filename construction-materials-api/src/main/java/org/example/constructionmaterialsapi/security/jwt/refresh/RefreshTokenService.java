@@ -3,6 +3,7 @@ package org.example.constructionmaterialsapi.security.jwt.refresh;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.constructionmaterialsapi.exception.TokenExpiredException;
 import org.example.constructionmaterialsapi.model.entity.RefreshToken;
 import org.example.constructionmaterialsapi.model.entity.User;
 import org.example.constructionmaterialsapi.repository.RefreshTokenRepository;
@@ -28,16 +29,18 @@ public class RefreshTokenService {
         refreshToken.setExpiryDate(LocalDateTime.now().plusDays(7));
         return refreshTokenRepository.save(refreshToken);
     }
+
     public RefreshToken validate(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Refresh token tapilmadi"));
+                .orElseThrow(() -> new IllegalArgumentException("Refresh token tapilmadi"));
 
         if (refreshToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             refreshTokenRepository.deleteByToken(token);
-            throw new RuntimeException("Refresh token muddeti bitti");
+            throw new TokenExpiredException("Refresh token muddeti bitib. Zehmet olmasa yeniden daxil olun");
         }
         return refreshToken;
     }
+
     @Transactional
     public void deleteAllByUser(User user) {
         refreshTokenRepository.deleteByUser(user);

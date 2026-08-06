@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Service
@@ -25,7 +24,7 @@ public class RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken.setUser(user);
-        refreshToken.setCreatedAt(Instant.from(LocalDateTime.now()));
+        refreshToken.setCreatedAt(Instant.now());
         refreshToken.setExpiryDate(LocalDateTime.now().plusDays(7));
         return refreshTokenRepository.save(refreshToken);
     }

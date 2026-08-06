@@ -39,14 +39,8 @@ public class AuthService {
 
     public String register(RegisterRequest request) {
 
-        User exsistingUser = userRepository.findByEmail(request.getEmail())
-                .orElse(null);
-
-        if (exsistingUser != null) {
-
-            if (exsistingUser.isActive()) {
-                throw new UserAlreadyExistsException("Bu email artiq istifade olunub");
-            }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExistsException("Bu email artiq istifade olunub");
         }
         if (userRepository.existsByPhone(request.getPhone())) {
             throw new RuntimeException("Bu telefon nomresi artiq istifade olunub");

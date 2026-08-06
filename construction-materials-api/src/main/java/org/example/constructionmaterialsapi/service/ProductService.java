@@ -57,6 +57,7 @@ public class ProductService {
         return productMapper.toResponse(product);
     }
 
+    @Transactional
     public void deleteProductById(Long id, String ownerEmail) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
@@ -74,6 +75,7 @@ public class ProductService {
                 .map(productMapper::toResponse);
     }
 
+    @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest request, String ownerEmail) {
 
         Product product = productRepository.findById(id).

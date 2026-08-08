@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -34,6 +35,10 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     UnitType unit;
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    boolean active = true;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "seller_id", nullable = false)

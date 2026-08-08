@@ -8,11 +8,14 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.example.constructionmaterialsapi.model.dto.request.ProductFilterRequest;
 import org.example.constructionmaterialsapi.model.dto.request.ProductRequest;
 import org.example.constructionmaterialsapi.model.dto.response.ProductResponse;
 import org.example.constructionmaterialsapi.service.ProductService;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +42,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Daxil edilen kategoriya tapilmadi")
     })
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','SELLER')")
+    @PreAuthorize("hasAnyRole('ADMIN','SELLER','USER')")
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request,
                                                          @RequestParam String ownerEmail) {
         return ResponseEntity
@@ -109,6 +112,17 @@ public class ProductController {
                                                          @Valid @RequestBody ProductRequest request,
                                                          @RequestParam String ownerEmail) {
         return ResponseEntity.ok(productService.updateProduct(id, request, ownerEmail));
+    }
+
+    @Operation(
+            summary = "Mehsullari filtreleyir",
+            description = "Ad, kategoriya ve qiymet araligina gore dinamik axtaris edir"
+    )
+    @GetMapping("/filter")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<Page<ProductResponse>> getFilterProducts(ProductFilterRequest request,
+                                                                  @ParameterObject @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(productService.filterProducts(request, pageable));
     }
 
 }

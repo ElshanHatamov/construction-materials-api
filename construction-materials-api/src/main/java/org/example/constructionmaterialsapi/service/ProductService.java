@@ -8,6 +8,7 @@ import org.example.constructionmaterialsapi.exception.CategoryNotFoundException;
 import org.example.constructionmaterialsapi.exception.ProductNotFoundException;
 import org.example.constructionmaterialsapi.exception.UserNotFoundException;
 import org.example.constructionmaterialsapi.mapper.ProductMapper;
+import org.example.constructionmaterialsapi.model.dto.request.ProductFilterRequest;
 import org.example.constructionmaterialsapi.model.dto.request.ProductRequest;
 import org.example.constructionmaterialsapi.model.dto.response.ProductResponse;
 import org.example.constructionmaterialsapi.model.entity.Category;
@@ -93,5 +94,16 @@ public class ProductService {
         Product updatedProduct = productRepository.save(product);
         return productMapper.toResponse(updatedProduct);
 
+    }
+
+    public Page<ProductResponse> filterProducts(ProductFilterRequest request,
+                                                Pageable pageable) {
+        Page<Product> products = productRepository.filterProducts(request.getName(),
+                request.getCategoryId(),
+                request.getMinPrice(),
+                request.getMaxPrice(),
+                pageable);
+
+        return products.map(productMapper::toResponse);
     }
 }

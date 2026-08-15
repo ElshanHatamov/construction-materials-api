@@ -6,8 +6,11 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+@Builder
 @Entity
 @Getter
 @Setter
@@ -21,6 +24,7 @@ public class Category {
     @NotBlank
     String name;
 
-    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL,orphanRemoval = true)
-    List<Product> productList = new ArrayList<>();
+    @ManyToMany(mappedBy = "categories")
+    @Builder.Default
+    Set<Product> products = new HashSet<>();
 }

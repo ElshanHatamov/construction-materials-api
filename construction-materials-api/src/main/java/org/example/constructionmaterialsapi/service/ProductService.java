@@ -17,6 +17,8 @@ import org.example.constructionmaterialsapi.model.entity.User;
 import org.example.constructionmaterialsapi.repository.CategoryRepository;
 import org.example.constructionmaterialsapi.repository.ProductRepository;
 import org.example.constructionmaterialsapi.repository.UserRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -50,6 +52,7 @@ public class ProductService {
         return productMapper.toResponse(savedProduct);
     }
 
+    @Cacheable(value = "products",key = "#id")
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findProductById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
@@ -59,6 +62,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(value = "products",key = "#id")
     public void deleteProductById(Long id, String ownerEmail) {
         Product product = productRepository.findProductById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
@@ -77,6 +81,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(value = "products",key = "#id")
     public ProductResponse updateProduct(Long id, ProductRequest request, String ownerEmail) {
 
         Product product = productRepository.findProductById(id).

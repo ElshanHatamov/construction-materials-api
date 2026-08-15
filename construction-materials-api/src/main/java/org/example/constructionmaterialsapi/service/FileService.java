@@ -1,5 +1,6 @@
 package org.example.constructionmaterialsapi.service;
 
+import org.example.constructionmaterialsapi.exception.MyFileNotFoundException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -61,10 +62,10 @@ public class FileService {
             if (resource.exists()) {
                 return resource;
             } else {
-                throw new RuntimeException("Fayl tapilmadi: " + fileName);
+                throw new MyFileNotFoundException("Fayl tapilmadi: " + fileName);
             }
         } catch (MalformedURLException ex) {
-            throw new RuntimeException("Fayl tapilmadi: " + fileName, ex);
+            throw new MyFileNotFoundException("Fayl tapilmadi: " + fileName, ex);
         }
     }
 }

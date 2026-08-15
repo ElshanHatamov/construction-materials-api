@@ -7,6 +7,8 @@ import org.example.constructionmaterialsapi.model.entity.Product;
 import org.example.constructionmaterialsapi.model.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 @Component
 public class ProductMapper {
 
@@ -23,7 +25,10 @@ public class ProductMapper {
 
         //Relations
         product.setSeller(seller);
-        product.setCategory(category);
+        if (category != null) {
+            product.setCategories(new HashSet<>());
+            product.getCategories().add(category);
+        }
 
         return product;
     }
@@ -47,10 +52,10 @@ public class ProductMapper {
         }
 
         //Kategoriya malumat
-        if (product.getCategory() != null) {
-
-            productResponse.setCategoryId(product.getCategory().getId());
-            productResponse.setCategoryName(product.getCategory().getName());
+        if (product.getCategories() != null && !product.getCategories().isEmpty()) {
+            Category category = product.getCategories().iterator().next();
+            productResponse.setCategoryId(category.getId());
+            productResponse.setCategoryName(category.getName());
         }
         return productResponse;
     }
@@ -69,7 +74,11 @@ public class ProductMapper {
             product.setSeller(seller);
         }
         if (category != null) {
-            product.setCategory(category);
+            if (product.getCategories() == null) {
+                product.setCategories(new HashSet<>());
+            }
+            product.getCategories().clear();
+            product.getCategories().add(category);
         }
     }
 }

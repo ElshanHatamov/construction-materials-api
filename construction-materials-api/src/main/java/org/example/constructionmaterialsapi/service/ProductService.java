@@ -88,8 +88,9 @@ public class ProductService {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Kateegoriya tapilmadi"));
 
-        product.setCategory(category);
-        productMapper.updateEntityFromDto(product, request, product.getSeller(), category);
+        product.getCategories().clear();
+        product.getCategories().add(category);
+        productMapper.updateEntityFromDto(product, request, product.getSeller(),category);
 
         Product updatedProduct = productRepository.save(product);
         return productMapper.toResponse(updatedProduct);
@@ -98,6 +99,10 @@ public class ProductService {
 
     public Page<ProductResponse> filterProducts(ProductFilterRequest request,
                                                 Pageable pageable) {
+        if (request.getMinPrice() != null && request.getMaxPrice() != null
+                && request.getMinPrice().compareTo(request.getMaxPrice()) > 0) {
+            throw new IllegalArgumentException("Minimum qiymet maximum qiymetden boyuk ola bilmez");
+        }
         Page<Product> products = productRepository.filterProducts(request.getName(),
                 request.getCategoryId(),
                 request.getMinPrice(),

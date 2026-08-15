@@ -51,7 +51,7 @@ public class ProductService {
     }
 
     public ProductResponse getProductById(Long id) {
-        Product product = productRepository.findById(id)
+        Product product = productRepository.findProductById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
                         "Mehsul tapilmadi"
                 ));
@@ -60,7 +60,7 @@ public class ProductService {
 
     @Transactional
     public void deleteProductById(Long id, String ownerEmail) {
-        Product product = productRepository.findById(id)
+        Product product = productRepository.findProductById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
                         "Mehsul tapilmadi"
                 ));
@@ -72,14 +72,14 @@ public class ProductService {
     }
 
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable)
+        return productRepository.findAllProducts(pageable)
                 .map(productMapper::toResponse);
     }
 
     @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest request, String ownerEmail) {
 
-        Product product = productRepository.findById(id).
+        Product product = productRepository.findProductById(id).
                 orElseThrow(() -> new ProductNotFoundException(
                         "Mehsul Tapilmadi"));
         if (!product.getSeller().getEmail().equals(ownerEmail)) {

@@ -1,5 +1,6 @@
 package org.example.constructionmaterialsapi.repository;
 
+import lombok.NonNull;
 import org.example.constructionmaterialsapi.model.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,8 +10,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+
+    @EntityGraph(attributePaths = {"categories", "seller"})
+    @Query("SELECT p FROM Product p")
+    Page<Product> findAllProducts(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"categories", "seller"})
+    @Query("SELECT p FROM Product p WHERE p.id = :id")
+    Optional<Product> findProductById(@Param("id") Long id);
 
     @EntityGraph(attributePaths = {"categories", "seller"})
     @Query("SELECT DISTINCT p FROM Product p JOIN p.categories c WHERE c.id = :categoryId")

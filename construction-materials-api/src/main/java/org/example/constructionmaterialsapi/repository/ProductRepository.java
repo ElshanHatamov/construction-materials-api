@@ -12,17 +12,22 @@ import java.math.BigDecimal;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @EntityGraph(attributePaths = {"category"})
-    Page<Product> getByCategoryId(Long categoryId, Pageable pageable);
+    @EntityGraph(attributePaths = {"categories", "seller"})
+    @Query("SELECT DISTINCT p FROM Product p JOIN p.categories c WHERE c.id = :categoryId")
+    Page<Product> getByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"category"})
+    @EntityGraph(attributePaths = {"categories", "seller"})
     Page<Product> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"category"})
+    @EntityGraph(attributePaths = {"categories", "seller"})
     Page<Product> findByPriceBetweenAndActiveTrue(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"category"})
-    Page<Product> findByCategoryIdAndPriceBetweenAndActiveTrue(Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+    @EntityGraph(attributePaths = {"categories", "seller"})
+    @Query("SELECT DISTINCT p FROM Product p JOIN p.categories c WHERE c.id = :categoryId AND p.price BETWEEN :minPrice AND :maxPrice AND p.active = true")
+    Page<Product> findByCategoryIdAndPriceBetweenAndActiveTrue(@Param("categoryId") Long categoryId,
+                                                               @Param("minPrice") BigDecimal minPrice,
+                                                               @Param("maxPrice") BigDecimal maxPrice,
+                                                               Pageable pageable);
 
     @EntityGraph(attributePaths = {"categories", "seller"})
     @Query("SELECT DISTINCT p FROM Product p " +

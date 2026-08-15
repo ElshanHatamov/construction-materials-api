@@ -24,18 +24,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @EntityGraph(attributePaths = {"category"})
     Page<Product> findByCategoryIdAndPriceBetweenAndActiveTrue(Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"category"})
-    @Query("SELECT p FROM Product p WHERE " +
-            "(:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%',:name,'%'))) AND " +
-            "(:categoryId IS NULL OR p.category.id = :categoryId) AND " +
+    @EntityGraph(attributePaths = {"categories", "seller"})
+    @Query("SELECT DISTINCT p FROM Product p " +
+            "LEFT JOIN p.categories c " +
+            "WHERE (:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
+            "(:categoryId IS NULL OR c.id = :categoryId) AND " +
             "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
             "(:maxPrice IS NULL OR p.price <= :maxPrice) AND " +
             "(p.active = true)")
-    Page<Product> filterProducts(
-            @Param("name") String name,
-            @Param("categoryId") Long categoryId,
-            @Param("minPrice") BigDecimal minPrice,
-            @Param("maxPrice") BigDecimal maxPrice,
-            Pageable pageable
-    );
+    Page<Product> filterProducts(@Param("name") String name,
+                                 @Param("categoryId") Long categoryId,
+                                 @Param("minPrice") BigDecimal minPrice,
+                                 @Param("maxPrice") BigDecimal maxPrice,
+                                 Pageable pageable);
 }

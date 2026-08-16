@@ -35,6 +35,7 @@ public class AuthService {
     ProductRepository productRepository;
     UserMapper userMapper;
     RefreshTokenService refreshTokenService;
+    EmailNotificationService emailNotificationService;
 
 
     public String register(RegisterRequest request) {
@@ -67,6 +68,7 @@ public class AuthService {
         String accessToken = jwtService.generateToken(loginRequest.getEmail());
         RefreshToken refreshToken = refreshTokenService.create(user);
 
+        emailNotificationService.sendLoginSuccessEmail(user.getEmail());
 
         return new LoginResponse(accessToken, refreshToken.getToken(), user.getRole().name());
 
@@ -85,6 +87,6 @@ public class AuthService {
         String newAccessToken = jwtService.generateToken(user.getEmail());
         RefreshToken newRefreshToken = refreshTokenService.create(user);
 
-        return new LoginResponse(newAccessToken,newRefreshToken.getToken(),user.getRole().name());
+        return new LoginResponse(newAccessToken, newRefreshToken.getToken(), user.getRole().name());
     }
 }

@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +17,7 @@ public class EmailNotificationService {
 
     JavaMailSender javaMailSender;
 
+    @Async
     public void sendLoginSuccessEmail(String userEmail) {
         log.info("Asinxron email gonderme prosesi basladi. Thread: {}", Thread.currentThread().getName());
 

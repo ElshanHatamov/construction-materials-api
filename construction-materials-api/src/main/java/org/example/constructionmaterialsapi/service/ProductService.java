@@ -36,6 +36,7 @@ public class ProductService {
     CategoryRepository categoryRepository;
 
     @Transactional
+    @CacheEvict(value = "products", allEntries = true)
     public ProductResponse createProduct(ProductRequest request, String ownerEmail) {
         User owner = userRepository.findByEmail(ownerEmail)
                 .orElseThrow(() -> new UserNotFoundException(
@@ -52,7 +53,7 @@ public class ProductService {
         return productMapper.toResponse(savedProduct);
     }
 
-    @Cacheable(value = "products",key = "#id")
+    @Cacheable(value = "products", key = "#id")
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findProductById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
@@ -62,7 +63,7 @@ public class ProductService {
     }
 
     @Transactional
-    @CacheEvict(value = "products",key = "#id")
+    @CacheEvict(value = "products", allEntries = true)
     public void deleteProductById(Long id, String ownerEmail) {
         Product product = productRepository.findProductById(id)
                 .orElseThrow(() -> new ProductNotFoundException(
@@ -81,7 +82,7 @@ public class ProductService {
     }
 
     @Transactional
-    @CacheEvict(value = "products",key = "#id")
+    @CacheEvict(value = "products", allEntries = true)
     public ProductResponse updateProduct(Long id, ProductRequest request, String ownerEmail) {
 
         Product product = productRepository.findProductById(id).
@@ -95,7 +96,7 @@ public class ProductService {
 
         product.getCategories().clear();
         product.getCategories().add(category);
-        productMapper.updateEntityFromDto(product, request, product.getSeller(),category);
+        productMapper.updateEntityFromDto(product, request, product.getSeller(), category);
 
         Product updatedProduct = productRepository.save(product);
         return productMapper.toResponse(updatedProduct);

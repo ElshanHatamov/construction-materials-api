@@ -15,3 +15,8 @@ spring:
     port: ${MAIL_PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
+
+logging:
+  level:
+    root: WARN
+    org.example.constructionmaterialsapi: INFO

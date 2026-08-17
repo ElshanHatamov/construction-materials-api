@@ -15,3 +15,9 @@ spring:
     port: 587
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
+
+logging:
+  level:
+    root: INFO
+    org.example.constructionmaterialsapi: DEBUG
+    org.hibernate.SQL: DEBUG

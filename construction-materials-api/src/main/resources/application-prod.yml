@@ -17,6 +17,8 @@ spring:
     password: ${MAIL_PASSWORD}
 
 logging:
+  file:
+    name: logs/construction-materials-prod.log
   level:
     root: WARN
     org.example.constructionmaterialsapi: INFO
